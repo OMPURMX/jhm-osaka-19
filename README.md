@@ -39,6 +39,10 @@ python3 -m http.server 8000 --directory dist
 
 ブラウザで http://localhost:8000/ を開きます。終了はControl+Cです。
 
+## Cloudflare Pages 自動更新テスト
+
+このREADMEのみの変更で、Pull Requestに対するCloudflare Pagesのプレビューデプロイを確認します。公開用の `dist/` は変更せず、本番反映は承認後に別途行います。
+
 ## 権利
 
 この書き出しは、サイトの文章・画像等に新たな再配布ライセンスを付与するものではありません。
