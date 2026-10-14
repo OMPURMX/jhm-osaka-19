@@ -1,0 +1,138 @@
+<!doctype html><html lang="ja"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>第19回学術集会 外部公開手順書</title><style>body{max-width:980px;margin:40px auto;padding:0 24px;color:#173b49;background:#f8f8f4}pre{font:16px/1.9 "Hiragino Kaku Gothic ProN","Yu Gothic",sans-serif;white-space:pre-wrap;overflow-wrap:anywhere;background:white;padding:30px;border:1px solid #dce4dc}@media print{body{margin:0;background:white}pre{border:0;font-size:11pt;padding:0}}</style><pre># 日本語手順書：GitHub保存・Cloudflare Pages公開
+
+対象：第19回 日本医療マネジメント学会 大阪府支部学術集会
+作成日：2026年10月14日
+
+## 1. この一式でできること
+
+現在のデザイン、文章、画像、ページ間リンク、折りたたみ表示、画面幅に応じたレイアウトを保持したまま、外部サーバーで公開できます。HTML13ページと画像1点の静的サイトです。CSSはHTML内に記述されており、JavaScript、データベース、サーバー処理、ChatGPT認証はありません。
+
+現在の公開サイトを削除したり、変更したりする必要はありません。まず新しいURLで並行して確認します。この書き出し時には、元サイトへの変更・再公開は行っていません。
+
+参加登録・演題登録のボタンは現在無効で、「準備中」の案内です。決済、アカウント、メール送信、領収書発行、参加者データ保存は含みません。
+
+## 2. 用意するもの
+
+- ダウンロードしたZIPを展開できるパソコン
+- ご自身または学術集会の管理下にあるGitHubアカウント
+- ご自身または学術集会の管理下にあるCloudflareアカウント
+- 独自ドメインを使う場合は、その管理権限（初回公開には不要）
+
+学術集会として引き継ぎやすい管理アカウントを選びます。GitHubはソース保管、Cloudflare Pagesは公開の役割です。
+
+## 3. ZIPを展開して確認
+
+1. ZIPをダウンロードして展開します。Macでは通常、ZIPをダブルクリックします。
+2. `jhm-osaka-19` フォルダを開きます。
+3. `dist`、`README.md`、`GUIDE_JA.md`、`verify.py` などがあることを確認します。
+4. `dist/index.html` と `dist/assets/occhi-connect.png` があることを確認します。
+
+`dist` の中身を移動したり、ファイル名を変更したりせず、フォルダごと保持します。
+
+## 4. GitHubに保存する（ブラウザ操作）
+
+1. https://github.com/ にサインインします。
+2. 「New repository」を選びます。
+3. リポジトリ名を `jhm-osaka-19` などにします。ここで示す名前は例です。
+4. ソース公開が不要なら「Private」を選びます。PrivateでもCloudflare Pagesから公開できます。PrivateリポジトリとWebサイトの公開範囲は別です。
+5. 初回はREADMEの自動作成などを選ばず、「Create repository」を押します。
+6. 空のリポジトリ画面の「uploading an existing file」、または「Add file」→「Upload files」へ進みます。
+7. 展開した `jhm-osaka-19` フォルダの**中身**をアップロード欄へドラッグします。`dist` はフォルダごと入れます。ZIP自体や外側のフォルダをアップロードしません。
+8. 「Commit changes」で保存します。ブランチ名は通常 `main` です。
+9. リポジトリの一番上に `dist` が表示され、その中に `index.html` があることを確認します。
+
+正しい位置：`リポジトリ / dist / index.html`
+誤った位置：`リポジトリ / jhm-osaka-19 / dist / index.html`
+
+MacのFinderでフォルダごとドラッグしにくい場合は、GitHub Desktopの「Add Local Repository」または新規リポジトリ作成機能を利用できます。通常のGit操作に慣れた担当者は、このフォルダをGitリポジトリとして初期化してpushしても構いません。元のSites用Gitリポジトリや認証情報はこのZIPには含みません。
+
+## 5. Cloudflare Pagesにつなぐ
+
+画面の表示名は更新で変わる場合があります。「Workers」を作るのではなく、「Pages」「Connect to Git」の導線を選びます。
+
+1. https://dash.cloudflare.com/ にサインインします。
+2. 「Workers &amp; Pages」を開きます。
+3. 「Create application」→「Pages」→「Connect to Git」へ進みます。
+4. GitHubを選択します。初回は接続の許可画面が表示されます。
+5. 接続先アカウントを確認し、可能なら今回のリポジトリだけを許可します。
+6. `jhm-osaka-19` リポジトリを選択し、セットアップへ進みます。
+7. 次の値を設定します。
+
+| 項目 | 設定値 |
+|---|---|
+| Project name | 任意の未使用名（例：jhm-osaka-19） |
+| Production branch | main（GitHubに実際にあるブランチ名） |
+| Framework preset | None |
+| Build command | exit 0 |
+| Build output directory | dist |
+| Root directory | 空欄 |
+| Environment variables | 設定不要 |
+
+8. 「Save and Deploy」を押します。この操作で新しいURLのサイトが公開されます。
+9. 成功後に表示される `https://実際のプロジェクト名.pages.dev` を開きます。このURLは例ではなく、画面に表示された実際のものを使用します。
+
+この方法では、npm installやnpm run build、APIキー、データベース設定は不要です。`exit 0` は「ビルド処理なしで正常終了」という指定です。
+
+## 6. 公開後に確認すること
+
+- トップの大会名、開催予定、テーマ、マスコットが表示される。
+- 左メニュー、各ページからHOMEへ戻るリンクが動く。
+- プログラム、参加登録、演題登録、参加者案内、座長・演者案内、協賛案内を開ける。
+- 折りたたみ項目を開閉できる。
+- スマートフォンでも文字・画像が重ならず読める。
+- 会場公式サイトなどの外部リンクが開く。
+- 参加費・会場・企画が「案」「調整中」であることを保持している。
+- 登録ボタンが準備中のままである（受付機能を追加したわけではありません）。
+
+Cloudflare Pagesは `/about.html` を `/about` など拡張子のないURLへ転送します。今回のHTMLは同じ階層にあるため、相対リンクを維持できますが、実際の公開URLで確認してください。
+
+元の `chatgpt.site` のURLをこのサーバーへ持ち出すことはできません。新しいURLで確認し、その後に案内先URLの切替を判断します。Sites側で編集しても、外部サイトへ自動反映されません。
+
+## 7. 独自ドメインを設定する場合（後からで構いません）
+
+1. 先に `pages.dev` のURLで表示確認を終えます。
+2. Pagesの対象プロジェクトから「Custom domains」→「Set up a custom domain」を開きます。
+3. 管理しているドメインまたはサブドメインを入力し、Cloudflareの案内に従います。
+4. ルートドメインとサブドメインではDNS・ネームサーバー設定の要件が異なります。表示された指示をドメイン管理担当者に確認します。
+5. 証明書とドメインが有効になってから、新しい公式URLとして案内します。
+
+すでにメールなどを使っているドメインのDNSは、既存のレコードを確認してから作業します。GitHubのPrivate設定だけでは公開Webサイトは非公開になりません。
+
+## 8. 今後の更新と担当者への引き継ぎ
+
+GitHubの `dist/` 内のHTMLや画像を修正して保存（commit）すると、標準のGit連携ではCloudflare Pagesが自動で再公開します。正式案内の更新は、変更内容を確認してから本番ブランチへ反映します。変更を先に確認したい場合は、別ブランチとプレビューを利用します。
+
+HTMLの文章修正は可能ですが、CSSが各ページに含まれるため、共通デザインを変更する際は全ページの整合性を確認します。パス・ファイル名は原則そのまま使います。
+
+引継ぎ時はGitHub・Cloudflare・独自ドメインの管理者と、公開対象ブランチを記録します。定期的にGitHubからZIPをダウンロードして、別の場所にも保管すると、再移行しやすくなります。
+
+## 9. よくある問題
+
+| 状況 | 確認すること |
+|---|---|
+| 最初の画面が404 | 公開ディレクトリが `dist` で、その直下に `index.html` があるか |
+| 画像が出ない | `dist/assets/occhi-connect.png` が保存されているか |
+| mainを選べない | GitHubで初回commitが完了し、ブランチが作成されているか |
+| npm関連のエラー | FrameworkをNone、Build commandをexit 0にしているか |
+| 古い内容が表示される | 最新deploymentの成功・対応commitを確認し、再読み込みする |
+| 存在しないURLでもトップが出る | Pagesの標準SPAフォールバックです。必要なら後日 `dist/404.html` を追加します。今回は原本保持のため追加していません |
+
+## 10. 技術担当者向け
+
+- サイト本体：HTML13ファイル、PNG1ファイル。インラインCSS。JavaScriptなし。
+- 外部通信：学会公式、第18回サイト、会場公式への通常のリンクのみ。
+- CSS、画像、コンテンツの外部CDN依存なし。システムフォント指定のため、OSによるフォント差はあります。
+- DB、サーバー側API、ChatGPTログイン、MCP、アプリ接続、環境変数は不要。
+- Sites用 `.openai/hosting.json` と `.git`、Git認証情報は除外済み。
+- `dist` は調査対象の原本とバイト単位で一致。変更は加えていません。
+- Python 3があれば、フォルダ内で `python3 verify.py` を実行して整合性を検査できます。
+- 本パッケージはファイル・リンク検査済みです。Cloudflareでの実デプロイおよびブラウザの見た目の比較は未実施です。
+
+## 11. 公式資料（2026年10月14日確認）
+
+- Git連携：https://developers.cloudflare.com/pages/get-started/git-integration/
+- 静的HTML：https://developers.cloudflare.com/pages/framework-guides/deploy-anything/
+- URL処理：https://developers.cloudflare.com/pages/configuration/serving-pages/
+- 独自ドメイン：https://developers.cloudflare.com/pages/configuration/custom-domains/
+- GitHubへのファイル追加：https://docs.github.com/en/repositories/working-with-files/managing-files/adding-a-file-to-a-repository
+</pre></html>
